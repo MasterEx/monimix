@@ -54,11 +54,14 @@ static Color[] colors = {Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY, C
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
         
-         File[] files = {new File("tr1.png"),new File("tr2.png"),new File("tr3.png")};
+         File[] files = {new File("qr1.png"),new File("qr2.png"),new File("qr3.png")};
          Utils utils = new Utils();
+//         
+         utils.saveImage(utils.multiImageEncoding(files), "qr-imagelast.png");
          
-         utils.saveImage(utils.multiImageEncoding(files), "tr-image.png");
-        
+         BufferedImage[] images = utils.multiImageDecoding(new File("qr-imagelast.png"));
+         for(int i=0;i<images.length;i++)
+             utils.saveImage(images[i], "decoded-qrimage"+i+".png");
         
 //        File img = new File("testimg.png");
 //        BufferedImage fis = ImageIO.read(img);
