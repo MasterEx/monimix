@@ -136,13 +136,21 @@ public class Utils {
     }
     
     private static int getDifferentColors(BufferedImage image) {
-        Set<Integer> colors = new HashSet<Integer>();
+        int maxColor = Color.BLACK.getRGB();
         for(int w=0;w<image.getWidth();w++) {
             for(int h=0;h<image.getHeight();h++) {
-                colors.add(image.getRGB(w, h));
+                if(image.getRGB(w, h)!=Color.WHITE.getRGB()) {
+                    if(image.getRGB(w, h) > maxColor) {
+                        maxColor = image.getRGB(w, h);
+                    }
+                }
             }
         }
-        return colors.size();
+        int trueMaxColor = 0;
+        for(int i=1;trueMaxColor<(maxColor - Color.BLACK.getRGB());i++) {
+            trueMaxColor = 5000 * getColorNumber(i) * 2;
+        }
+        return ((trueMaxColor/5000)+1);
     }
     
     private static int numberOfImages(int colors) {
