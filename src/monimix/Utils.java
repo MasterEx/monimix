@@ -16,22 +16,22 @@ import javax.imageio.ImageIO;
  */
 public class Utils {
     
-    public BufferedImage readImage(File image) throws IOException {
+    public static BufferedImage readImage(File image) throws IOException {
         BufferedImage bfimg = ImageIO.read(image);
         return bfimg;
     }
     
-    public void saveImage(BufferedImage image, String destination) throws IOException {
+    public static void saveImage(BufferedImage image, String destination) throws IOException {
         // idea: get prefix from destination name
         saveImage(image, destination, "png");
     }
     
-    public void saveImage(BufferedImage image, String destination, String type) throws IOException {
+    public static void saveImage(BufferedImage image, String destination, String type) throws IOException {
         File file = new File(destination);
         ImageIO.write(image, type, file);
     }
-    
-    public BufferedImage multiImageEncoding(File[] images) {
+    // NOTE make all th images full black
+    public static BufferedImage multiImageEncoding(File[] images) {
         BufferedImage[] bfimages = new BufferedImage[images.length];
         int width = 0, height = 0;
         for(int i=0;i<images.length;i++) {
@@ -48,7 +48,7 @@ public class Utils {
                 Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        BufferedImage tmpMixedImg = bfimages[0];
+        BufferedImage tmpMixedImg = makeItBlack(bfimages[0]);
         for(int i=1;i<bfimages.length;i++) {
         int numberOfColors = getColorNumber(i+1);
         // change midColor name to something more relevant
@@ -72,21 +72,21 @@ public class Utils {
         return tmpMixedImg;
     }
     
-    private int getColorNumber(int numberOfImages) {
+    private static int getColorNumber(int numberOfImages) {
         int n = 0;
         for(int i=1;i<=numberOfImages;i++)
             n += factorial(numberOfImages)/(factorial(i)*factorial(numberOfImages-i));
         return n;
     }
     
-    private int factorial(int number) {
+    private static int factorial(int number) {
         if(number<=1)
             return 1;
         else
             return number*factorial(number-1);
     }
     
-    public BufferedImage[] multiImageDecoding(File image) {
+    public static BufferedImage[] multiImageDecoding(File image) {
         
         System.out.println(Color.BLACK.getRGB()+" "+Color.WHITE.getRGB());
         System.out.println((Color.BLACK.getRGB()+1000)>Color.BLACK.getRGB());
@@ -135,7 +135,7 @@ public class Utils {
         return bfimages;
     }
     
-    private int getDifferentColors(BufferedImage image) {
+    private static int getDifferentColors(BufferedImage image) {
         Set<Integer> colors = new HashSet<Integer>();
         for(int w=0;w<image.getWidth();w++) {
             for(int h=0;h<image.getHeight();h++) {
@@ -145,11 +145,21 @@ public class Utils {
         return colors.size();
     }
     
-    private int numberOfImages(int colors) {
+    private static int numberOfImages(int colors) {
         int n = 1;
         while((colors = colors/2) >= 1)
             n++;
         return n;
+    }
+    
+    private static BufferedImage makeItBlack(BufferedImage image) {
+        for(int w=0;w<image.getWidth();w++) {
+            for(int h=0;h<image.getHeight();h++) {
+                if(image.getRGB(w,h) != Color.WHITE.getRGB())
+                    image.setRGB(w, h, Color.BLACK.getRGB());
+            }
+        }
+        return image;
     }
 
 }

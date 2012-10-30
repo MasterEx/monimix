@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import no.geosoft.cc.color.ui.ColorUtil;
@@ -21,6 +22,17 @@ import no.geosoft.cc.color.ui.ColorUtil;
  * @author periklis
  */
 public class Monimix {
+    
+    static void getHelp() {
+        System.out.print("Monimix v.0.1 (2012 Oct 30)- Periklis Ntanasis <pntanasis@gmail.com>\n"
+                + "\n"
+                + "usage: monimix [arguments] -i [file ...] -o [file ...]\n"
+                + "\n"
+                + "Arguments:\n"
+                + "-i\tInput, maybe white space separated files\n"
+                + "-o\tOutput, in case of demux it's the filename prefix\n"
+                + "-h\tPrints this help message\n");
+    }
     
     //http://ganeshtiwaridotcomdotnp.blogspot.gr/2011/12/java-reflection-getting-name-of-color.html
      public static String getNameReflection(Color colorParam) {
@@ -54,14 +66,57 @@ static Color[] colors = {Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY, C
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
         
-         File[] files = {new File("qr1.png"),new File("qr2.png"),new File("qr3.png")};
-         Utils utils = new Utils();
+        ArrayList<File> files = new ArrayList<File>();
+        String outputName = "";
+        
+        int i=0;
+        while(i<args.length) {
+            if(args[i].equalsIgnoreCase("-h")) {
+                getHelp();
+                System.exit(0);
+            } else if(args[i].equalsIgnoreCase("-i")) {
+                i++;
+                while(i<args.length && args[i].charAt(0) != '-') {
+                    files.add(new File(args[i++]));
+                }
+            } else if(args[i].equalsIgnoreCase("-o")) {
+                i++;
+                 if(args[i].charAt(0) != '-') {
+                    outputName = args[i++];
+                }
+            } else {
+                System.out.println("Uknown option: "+args[i]+"\nUse monimix -h for help.");
+                System.exit(1);
+            }
+        }
+        
+        if(args.length == 0) {
+            System.out.println("You haven't given any arguments.\nUse monimix -h for help.");
+            System.exit(1);
+        } else if(outputName.equalsIgnoreCase("")) {
+            System.out.println("Output should be defined.\nUse monimix -h for help.");
+            System.exit(1);
+        } else if(files.size() == 0) {
+            System.out.println("Input should be defined.\nUse monimix -h for help.");
+            System.exit(1);
+        }
+        
+        if(files.size()>1) {
+            Utils.saveImage(Utils.multiImageEncoding(files.toArray(new File[files.size()])),outputName);
+        } else {
+            BufferedImage[] images = Utils.multiImageDecoding(files.get(0));
+            for(i=0;i<images.length;i++)
+                Utils.saveImage(images[i], outputName+i+".png");
+        }
+//        
+//         File[] files = {new File("qr1.png"),new File("qr2.png"),new File("qr3.png")};
+//         Utils utils = new Utils();
+////         
+//         utils.saveImage(utils.multiImageEncoding(files), "qr-imagelast.png");
 //         
-         utils.saveImage(utils.multiImageEncoding(files), "qr-imagelast.png");
-         
-         BufferedImage[] images = utils.multiImageDecoding(new File("qr-imagelast.png"));
-         for(int i=0;i<images.length;i++)
-             utils.saveImage(images[i], "decoded-qrimage"+i+".png");
+//         BufferedImage[] images = utils.multiImageDecoding(new File("qr-imagelast.png"));
+//         for(int i=0;i<images.length;i++)
+//             utils.saveImage(images[i], "decoded-qrimage"+i+".png");
         
 //        File img = new File("testimg.png");
 //        BufferedImage fis = ImageIO.read(img);
