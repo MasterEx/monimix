@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -55,13 +53,18 @@ public class Utils {
         int midColor = (int) Math.floor(numberOfColors/2);
             for(int w=0;w<width;w++) {
                 for(int h=0;h<height;h++) {
-                    if(bfimages[i].getRGB(w, h) == Color.WHITE.getRGB() && 
-                            tmpMixedImg.getRGB(w, h) == Color.WHITE.getRGB()) {
-                        continue;
-                    } else if(bfimages[i].getRGB(w, h) == Color.WHITE.getRGB()) {
+                    if((bfimages[i].getRGB(w, h) == Color.WHITE.getRGB() ||
+                            bfimages[i].getRGB(w, h) == 0) && 
+                            (tmpMixedImg.getRGB(w, h) == Color.WHITE.getRGB() ||
+                            tmpMixedImg.getRGB(w, h) == 0)) {
+                        if(tmpMixedImg.getRGB(w, h) == 0)
+                            tmpMixedImg.setRGB(w, h, Color.WHITE.getRGB());
+                    } else if(bfimages[i].getRGB(w, h) == Color.WHITE.getRGB() ||
+                            bfimages[i].getRGB(w, h) == 0) {
                         if(i==0)
                             tmpMixedImg.setRGB(w, h, Color.BLACK.getRGB());
-                    } else if(tmpMixedImg.getRGB(w, h) == Color.WHITE.getRGB()) {
+                    } else if(tmpMixedImg.getRGB(w, h) == Color.WHITE.getRGB() ||
+                            tmpMixedImg.getRGB(w, h) == 0) {
                         tmpMixedImg.setRGB(w, h, midColor*5000 + Color.BLACK.getRGB());
                     } else {
                         tmpMixedImg.setRGB(w, h, midColor*5000 + tmpMixedImg.getRGB(w, h) + 5000);
@@ -88,9 +91,6 @@ public class Utils {
     
     public static BufferedImage[] multiImageDecoding(File image) {
         
-        System.out.println(Color.BLACK.getRGB()+" "+Color.WHITE.getRGB());
-        System.out.println((Color.BLACK.getRGB()+1000)>Color.BLACK.getRGB());
-        
         BufferedImage originalImage = null;
         try {
             originalImage = readImage(image);
@@ -111,11 +111,13 @@ public class Utils {
             for(int w=0;w<width;w++) {
                 for(int h=0;h<height;h++) {                    
                     if(i==0) {
-                        if(originalImage.getRGB(w, h) != Color.WHITE.getRGB())
+                        if(originalImage.getRGB(w, h) != Color.WHITE.getRGB() && 
+                                originalImage.getRGB(w, h) != 0)
                             originalImage.setRGB(w, h, Color.BLACK.getRGB());
                         continue;
                     }
-                    if(originalImage.getRGB(w, h) == Color.WHITE.getRGB()) {
+                    if(originalImage.getRGB(w, h) == Color.WHITE.getRGB() || 
+                            originalImage.getRGB(w, h) == 0) {
                         bfimages[i].setRGB(w, h, Color.WHITE.getRGB());
                     } else if(originalImage.getRGB(w, h) > Color.BLACK.getRGB() + (midColor * 5000)) {
 //                              System.out.println("+2 "+midColor+" "+numberOfColors+" "+i);
@@ -139,7 +141,8 @@ public class Utils {
         int maxColor = Color.BLACK.getRGB();
         for(int w=0;w<image.getWidth();w++) {
             for(int h=0;h<image.getHeight();h++) {
-                if(image.getRGB(w, h)!=Color.WHITE.getRGB()) {
+                if(image.getRGB(w, h) != Color.WHITE.getRGB() &&
+                        image.getRGB(w, h) != 0) {
                     if(image.getRGB(w, h) > maxColor) {
                         maxColor = image.getRGB(w, h);
                     }
@@ -163,7 +166,8 @@ public class Utils {
     private static BufferedImage makeItBlack(BufferedImage image) {
         for(int w=0;w<image.getWidth();w++) {
             for(int h=0;h<image.getHeight();h++) {
-                if(image.getRGB(w,h) != Color.WHITE.getRGB())
+                if(image.getRGB(w,h) != Color.WHITE.getRGB() && 
+                        image.getRGB(w,h) != 0)
                     image.setRGB(w, h, Color.BLACK.getRGB());
             }
         }

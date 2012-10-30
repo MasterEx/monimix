@@ -64,7 +64,7 @@ static Color[] colors = {Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY, C
      * @param args the command line arguments
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        // TODO code application logic here
+        // TODO code application logic here        
         
         ArrayList<File> files = new ArrayList<File>();
         String outputName = "";
