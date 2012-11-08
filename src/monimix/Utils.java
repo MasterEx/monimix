@@ -1,19 +1,19 @@
 /**
- *  monimix - monochrome image mix: it combines monochrome images to one
- *  Copyright (C) 2012  Periklis Ntanasis <pntanasis@gmail.com>
+ * monimix - monochrome image mix: it combines monochrome images to one
+ * Copyright (C) 2012 Periklis Ntanasis <pntanasis@gmail.com>
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package monimix;
 
@@ -27,6 +27,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
+ *
+ * Contains all the monimix logic.
  *
  * @author Periklis Ntanasis
  */
@@ -48,7 +50,7 @@ public class Utils {
     }
 
     /**
-     * Saves an image to the specified location
+     * Saves an image to a specified location
      *
      * @param image The image to be saved
      * @param destination The destination file
@@ -348,9 +350,9 @@ public class Utils {
      * @return The converted image
      */
     public static BufferedImage transparentBG(BufferedImage image, Boolean transparent) {
-        BufferedImage tmpImg = new BufferedImage(image.getWidth(),image.getHeight(),BufferedImage.TYPE_4BYTE_ABGR );
+        BufferedImage tmpImg = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         for (int w = 0; w < image.getWidth(); w++) {
-            for (int h = 0; h < image.getHeight(); h++) {                
+            for (int h = 0; h < image.getHeight(); h++) {
                 if (image.getRGB(w, h) == Color.WHITE.getRGB() && transparent) {
                     tmpImg.setRGB(w, h, 0);
                 } else if (image.getRGB(w, h) == 0 && !transparent) {

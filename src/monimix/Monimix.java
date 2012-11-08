@@ -1,19 +1,19 @@
 /**
- *  monimix - monochrome image mix: it combines monochrome images to one
- *  Copyright (C) 2012  Periklis Ntanasis <pntanasis@gmail.com>
+ * monimix - monochrome image mix: it combines monochrome images to one
+ * Copyright (C) 2012 Periklis Ntanasis <pntanasis@gmail.com>
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package monimix;
 
@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Arguments' parsing and commands' processing
  *
  * @author Periklis Ntanasis
  */
@@ -50,12 +51,25 @@ public class Monimix {
                 + "-h\tPrints this help message\n");
     }
 
+    static void printIOExceptionMessage(Exception ex, String outputName, String suffix, int i) {
+        if (Options.DEBUG) {
+            Logger.getLogger(Monimix.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.err.println("Unable to write " + outputName + ((i >= 0) ? i : "") + "." + suffix + " image");
+        if (suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("jpg")) {
+            System.err.println("If you use OpenJDK there isn't JPEG support built in");
+        }
+        System.exit(1);
+    }
+
+    static void printIOExceptionMessage(Exception ex, String outputName, String suffix) {
+        printIOExceptionMessage(ex, outputName, suffix, -100);
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here        
-
         ArrayList<File> files = new ArrayList<File>();
         String outputName = "";
         String hexColor = "";
@@ -171,23 +185,14 @@ public class Monimix {
                 try {
                     Utils.saveImage(tempImage.get(0), outputName + "." + suffix, suffix);
                 } catch (IOException ex) {
-                    if (Options.DEBUG) {
-                        Logger.getLogger(Monimix.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    printIOExceptionMessage(ex, outputName, suffix);
                 }
             } else {
                 for (BufferedImage image : tempImage) {
                     try {
                         Utils.saveImage(image, outputName + (i++) + "." + suffix, suffix);
                     } catch (IOException ex) {
-                        if (Options.DEBUG) {
-                            Logger.getLogger(Monimix.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        System.err.println("Unable to write " + outputName + (i++) + "." + suffix + " image");
-                        if (suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("jpg")) {
-                            System.err.println("If you use OpenJDK there isn't JPEG support built in");
-                        }
-                        System.exit(1);
+                        printIOExceptionMessage(ex, outputName, suffix, i++);
                     }
                 }
             }
@@ -198,14 +203,7 @@ public class Monimix {
             try {
                 Utils.saveImage(Utils.multiImageEncoding(files.toArray(new File[files.size()])), outputName + "." + suffix, suffix);
             } catch (IOException ex) {
-                if (Options.DEBUG) {
-                    Logger.getLogger(Monimix.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                System.err.println("Unable to write " + outputName + (i++) + "." + suffix + " image");
-                if (suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("jpg")) {
-                    System.err.println("If you use OpenJDK there isn't JPEG support built in");
-                }
-                System.exit(1);
+                printIOExceptionMessage(ex, outputName, suffix);
             }
         } else {
             BufferedImage[] images = Utils.multiImageDecoding(files.get(0));
@@ -213,14 +211,7 @@ public class Monimix {
                 try {
                     Utils.saveImage(images[i], outputName + i + "." + suffix, suffix);
                 } catch (IOException ex) {
-                    if (Options.DEBUG) {
-                        Logger.getLogger(Monimix.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    System.err.println("Unable to write " + outputName + (i++) + "." + suffix + " image");
-                    if (suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("jpg")) {
-                        System.err.println("If you use OpenJDK there isn't JPEG support built in");
-                    }
-                    System.exit(1);
+                    printIOExceptionMessage(ex, outputName, suffix, i);
                 }
             }
         }
